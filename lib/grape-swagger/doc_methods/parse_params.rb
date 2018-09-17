@@ -63,13 +63,13 @@ module GrapeSwagger
 
         def document_array_param(value_type, definitions)
           if value_type[:documentation].present?
-            param_type = value_type[:documentation][:param_type]
+            array_param_type = value_type[:documentation][:param_type]
             doc_type = value_type[:documentation][:type]
             type = DataType.mapping(doc_type) if doc_type && !DataType.request_primitive?(doc_type)
             collection_format = value_type[:documentation][:collectionFormat]
           end
 
-          param_type ||= value_type[:param_type]
+          array_param_type ||= value_type[:param_type]
 
           array_items = {}
           if definitions[value_type[:data_type]]
@@ -85,7 +85,7 @@ module GrapeSwagger
 
           array_items[:default] = value_type[:default] if value_type[:default].present?
 
-          @parsed_param[:in] = param_type || 'formData'
+          @parsed_param[:in] = array_param_type || param_type(value_type)
           @parsed_param[:items] = array_items
           @parsed_param[:type] = 'array'
           @parsed_param[:collectionFormat] = collection_format if DataType.collections.include?(collection_format)
